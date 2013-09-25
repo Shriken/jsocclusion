@@ -21,7 +21,22 @@ function Thing(x, y) {
 }
 
 function run() {
+	update();
 	draw();
+}
+
+function update() {
+	var player = world.player;
+
+	if(wDown) {
+		player.y -= 1;
+	} else if(aDown) {
+		player.x -= 1;
+	} else if(sDown) {
+		player.y += 1;
+	} else if(dDown) {
+		player.x += 1;
+	}
 }
 
 function draw() {
@@ -139,7 +154,35 @@ function mouseMove() {
 	mouseY = event.pageY-10;
 }
 
+function keyDown() {
+	if (event.keyCode == 87) {
+		wDown = true;
+	} else if (event.keyCode == 65) {
+		aDown = true;
+	} else if (event.keyCode == 83) {
+		sDown = true;
+	} else if (event.keyCode == 68) {
+		dDown = true;
+	}
+}
+
+function keyUp() {
+	if (event.keyCode == 87) {
+		wDown = false;
+	} else if (event.keyCode == 65) {
+		aDown = false;
+	} else if (event.keyCode == 83) {
+		sDown = false;
+	} else if (event.keyCode == 68) {
+		dDown = false;
+	}
+}
+
 var mouseX, mouseY;
+var wDown = false;
+var aDown = false;
+var sDown = false;
+var dDown = false;
 var world = new World(800, 600);
 
 setInterval(run, 1000/60);
