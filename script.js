@@ -29,32 +29,48 @@ function draw() {
 	var ctx = canvas.getContext("2d");
 	var player = world.player;
 
-	drawBorders(canvas, ctx);
-
-
-	var theta = Math.atan2(mouseY-player.y, mouseX-player.x);
-
-	//line things
-	ctx.fillStyle = "rgb(255,255,255)";
-	ctx.beginPath();
-	ctx.moveTo(player.x, player.y);
-	ctx.lineTo(Math.cos(theta-Math.PI/4) * 5000, Math.sin(theta-Math.PI/4) * 5000);
-	ctx.lineTo(Math.cos(theta+Math.PI/4) * 5000, Math.sin(theta+Math.PI/4) * 5000);
-	ctx.fill();
+	blankCanvas(canvas, ctx);
 
 	//things
+	ctx.fillStyle = "rgb(0,0,200)";
+	for (var i=0; i<world.things.length; i++) {
+		drawThing(world.things[i], ctx);
+	}
+
+	//thing shadows
 	ctx.fillStyle = "rgb(0,0,0)";
 	for (var i=0; i<world.things.length; i++) {
-		var thing = world.things[i];
-		castShadow(thing, ctx);
-	
-		ctx.fillStyle = "rgb(0,0,200)";
-		drawThing(thing, ctx);
+		castShadow(world.things[i], ctx);
 	}
+
+	limitVisionCone(ctx);
 
 	//player
 	ctx.fillStyle = "rgb(200,0,0)";
 	drawThing(player, ctx);
+}
+
+function limitVisionCone(ctx) {
+	var player = world.player;
+	var coneWidth = Math.PI / 4;
+	var mouseAngle = Math.atan2(mouseY - player.y,
+							    mouseX - player.x);
+	var theta = mouseAngle + coneWidth / 2;
+
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.beginPath();
+	ctx.moveTo(player.x, player.y);
+	while (theta < mouseAngle - coneWidth / 2 + Math.PI*2) {
+		ctx.lineTo(player.x + Math.cos(theta) * 5000,
+				   player.y + Math.sin(theta) * 5000);
+		theta += Math.PI / 4;
+	}
+
+	theta = mouseAngle - coneWidth / 2;
+	ctx.lineTo(player.x + Math.cos(theta) * 5000,
+			   player.y + Math.sin(theta) * 5000);
+
+	ctx.fill();
 }
 
 function castShadow(thing, ctx) {
@@ -113,8 +129,8 @@ function angle(thing1, thing2) {
 	return Math.atan2(thing2.y-thing1.y, thing2.x-thing1.x);
 }
 
-function drawBorders(canvas, ctx) {
-	ctx.fillStyle = "rgb(0,0,0)";
+function blankCanvas(canvas, ctx) {
+	ctx.fillStyle = "rgb(255,255,255)";
 	ctx.fillRect(0,0, canvas.width, canvas.height);
 }
 
