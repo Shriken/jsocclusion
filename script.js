@@ -30,11 +30,17 @@ function update() {
 
 	if(wDown) {
 		player.y -= 1;
-	} else if(aDown) {
+	}
+	
+	if(aDown) {
 		player.x -= 1;
-	} else if(sDown) {
+	}
+	
+	if(sDown) {
 		player.y += 1;
-	} else if(dDown) {
+	}
+
+	if(dDown) {
 		player.x += 1;
 	}
 }
