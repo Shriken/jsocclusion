@@ -191,4 +191,7 @@ var sDown = false;
 var dDown = false;
 var world = new World(800, 600);
 
+document.getElementById("canvas").tabIndex = 0;
+document.getElementById("canvas").focus();
+
 setInterval(run, 1000/60);
