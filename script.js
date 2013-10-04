@@ -191,7 +191,7 @@ function angle(thing1, thing2) {
 }
 
 function blankCanvas(ctx) {
-	ctx.fillStyle = "rgb(255,255,255)";
+	ctx.fillStyle = "rgb(0,55,0)";
 	ctx.fillRect(0,0, canvas.width, canvas.height);
 }
 
