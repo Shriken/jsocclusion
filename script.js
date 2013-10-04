@@ -17,9 +17,10 @@ function World(x, y) {
 	this.y = y;
 
 	this.player = new Thing(x / 2, y / 2);
+	this.player.speed = 3;
 	this.things = [];
 
-	for (var i=0; i<5; i++)
+	for (var i=0; i<200; i++)
 		this.things.push(new Thing(Math.random()*x,
 								   Math.random()*y));
 }
@@ -27,11 +28,23 @@ function World(x, y) {
 function Thing(x, y) {
 	this.x = x;
 	this.y = y;
+	this.radius = 10;
+
 	this.points = [];
-	this.points.push([6,6]);
-	this.points.push([6,-6]);
-	this.points.push([-6,-6]);
-	this.points.push([-6,6]);
+
+	//octagon
+	var theta = 0;
+	for (var i=0; theta < Math.PI*2; i++) {
+		this.points.push([this.radius * Math.cos(theta),
+						  this.radius * Math.sin(theta)]);
+		theta += Math.PI / 4;
+	}
+
+	//square
+	/*this.points.push([this.radius, this.radius]);
+	this.points.push([this.radius, -this.radius]);
+	this.points.push([-this.radius, -this.radius]);
+	this.points.push([-this.radius, this.radius]);*/
 }
 
 function run() {
@@ -43,16 +56,16 @@ function update() {
 	var player = world.player;
 
 	if(wDown)
-		player.y -= 1;
+		player.y -= player.speed;
 	
 	if(aDown)
-		player.x -= 1;
+		player.x -= player.speed;
 	
 	if(sDown)
-		player.y += 1;
+		player.y += player.speed;
 
 	if(dDown)
-		player.x += 1;
+		player.x += player.speed;
 }
 
 function draw() {
@@ -80,25 +93,20 @@ function draw() {
 	drawThing(player, ctx);
 }
 
-function limitVisionCone(ctx) {
+function drawThing(thing, ctx) {
 	var player = world.player;
-	var mouseAngle = Math.atan2(mouseY - player.y,
-							    mouseX - player.x);
-	var theta = mouseAngle + coneWidth / 2;
+	var x = canvas.width/2 + thing.x - player.x;
+	var y = canvas.height/2 + thing.y - player.y;
 
-	ctx.fillStyle = "rgb(0,0,0)";
 	ctx.beginPath();
-	ctx.moveTo(player.x, player.y);
-	while (theta < mouseAngle - coneWidth / 2 + Math.PI*2) {
-		ctx.lineTo(player.x + Math.cos(theta) * 5000,
-				   player.y + Math.sin(theta) * 5000);
-		theta += Math.PI / 4;
+	var p = thing.points[0];
+	ctx.moveTo(x + p[0],
+			   y + p[1]);
+	for (var i=1; i<thing.points.length; i++) {
+		p = thing.points[i];
+		ctx.lineTo(x + p[0],
+				   y + p[1]);
 	}
-
-	theta = mouseAngle - coneWidth / 2;
-	ctx.lineTo(player.x + Math.cos(theta) * 5000,
-			   player.y + Math.sin(theta) * 5000);
-
 	ctx.fill();
 }
 
@@ -122,15 +130,41 @@ function castShadow(thing, ctx) {
 		}
 	}
 
+	var player = world.player;
+	var x = canvas.width/2 + thing.x - player.x;
+	var y = canvas.height/2 + thing.y - player.y;
+
 	ctx.fillStyle = "rgb(0,0,0)";
 
 	ctx.beginPath();
-	ctx.moveTo(thing.x + minPoint[0], thing.y + minPoint[1]);
-	ctx.lineTo(thing.x + minPoint[0] + Math.cos(minAngle)*5000,
-			   thing.y + minPoint[1] + Math.sin(minAngle)*5000);
-	ctx.lineTo(thing.x + maxPoint[0] + Math.cos(maxAngle)*5000,
-			   thing.y + maxPoint[1] + Math.sin(maxAngle)*5000);
-	ctx.lineTo(thing.x + maxPoint[0], thing.y + maxPoint[1]);
+	ctx.moveTo(x + minPoint[0], y + minPoint[1]);
+	ctx.lineTo(x + minPoint[0] + Math.cos(minAngle)*5000,
+			   y + minPoint[1] + Math.sin(minAngle)*5000);
+	ctx.lineTo(x + maxPoint[0] + Math.cos(maxAngle)*5000,
+			   y + maxPoint[1] + Math.sin(maxAngle)*5000);
+	ctx.lineTo(x + maxPoint[0], y + maxPoint[1]);
+	ctx.fill();
+}
+
+function limitVisionCone(ctx) {
+	var player = world.player;
+	var mouseAngle = Math.atan2(mouseY - player.y,
+							    mouseX - player.x);
+	var theta = mouseAngle + coneWidth / 2;
+
+	ctx.fillStyle = "rgb(0,0,0)";
+	ctx.beginPath();
+	ctx.moveTo(player.x, player.y);
+	while (theta < mouseAngle - coneWidth / 2 + Math.PI*2) {
+		ctx.lineTo(player.x + Math.cos(theta) * 5000,
+				   player.y + Math.sin(theta) * 5000);
+		theta += Math.PI / 4;
+	}
+
+	theta = mouseAngle - coneWidth / 2;
+	ctx.lineTo(player.x + Math.cos(theta) * 5000,
+			   player.y + Math.sin(theta) * 5000);
+
 	ctx.fill();
 }
 
@@ -139,19 +173,6 @@ function angleToPoint(point, thing) {
 	var theta = Math.atan2((thing.y + point[1]) - player.y,
 						   (thing.x + point[0]) - player.x);
 	return theta;
-}
-
-function drawThing(thing, ctx) {
-	ctx.beginPath();
-	var p = thing.points[0];
-	ctx.moveTo(thing.x + p[0],
-			   thing.y + p[1]);
-	for (var i=1; i<thing.points.length; i++) {
-		p = thing.points[i];
-		ctx.lineTo(thing.x + p[0],
-				   thing.y + p[1]);
-	}
-	ctx.fill();
 }
 
 function angle(thing1, thing2) {
