@@ -20,9 +20,9 @@ function World(x, y) {
 	this.player.speed = 3;
 	this.things = [];
 
-	for (var i=0; i<200; i++)
-		this.things.push(new Thing(Math.random()*x,
-								   Math.random()*y));
+	for (var i=0; i<800; i++)
+		this.things.push(new Thing(Math.random()*2*x,
+								   Math.random()*2*y));
 }
 
 function Thing(x, y) {
@@ -74,16 +74,27 @@ function draw() {
 
 	blankCanvas(ctx);
 
+	var minX = player.x - canvas.width/2;
+	var minY = player.y - canvas.height/2;
+	var maxX = player.x + canvas.width/2;
+	var maxY = player.y + canvas.height/2;
+
 	//things
 	ctx.fillStyle = "rgb(0,0,255)";
 	for (var i=0; i<world.things.length; i++) {
-		drawThing(world.things[i], ctx);
+		var thing = world.things[i];
+		if (minX < thing.x && thing.x < maxX &&
+			minY < thing.y && thing.y < maxY) 
+			drawThing(thing, ctx);
 	}
 
 	//thing shadows
 	ctx.fillStyle = "rgb(0,0,0)";
 	for (var i=0; i<world.things.length; i++) {
-		castShadow(world.things[i], ctx);
+		var thing = world.things[i];
+		if (minX < thing.x && thing.x < maxX &&
+			minY < thing.y && thing.y < maxY) 
+			castShadow(thing, ctx);
 	}
 
 	//limitVisionCone(ctx);
