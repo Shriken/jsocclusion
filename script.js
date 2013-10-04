@@ -5,9 +5,10 @@ var sDown = false;
 var dDown = false;
 var coneWidth = Math.PI / 2;
 var world = new World(800, 600);
+var canvas = document.getElementById("canvas");
 
-document.getElementById("canvas").tabIndex = 0;
-document.getElementById("canvas").focus();
+canvas.tabIndex = 0;
+canvas.focus();
 
 setInterval(run, 1000/60);
 
@@ -15,7 +16,7 @@ function World(x, y) {
 	this.x = x;
 	this.y = y;
 
-	this.player = new Thing(400,300);
+	this.player = new Thing(canvas.width/2, canvas.height/2);
 	this.things = [];
 
 	for (var i=0; i<5; i++)
@@ -55,11 +56,10 @@ function update() {
 }
 
 function draw() {
-	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext("2d");
 	var player = world.player;
 
-	blankCanvas(canvas, ctx);
+	blankCanvas(ctx);
 
 	//things
 	ctx.fillStyle = "rgb(0,0,255)";
@@ -158,7 +158,7 @@ function angle(thing1, thing2) {
 	return Math.atan2(thing2.y-thing1.y, thing2.x-thing1.x);
 }
 
-function blankCanvas(canvas, ctx) {
+function blankCanvas(ctx) {
 	ctx.fillStyle = "rgb(255,255,255)";
 	ctx.fillRect(0,0, canvas.width, canvas.height);
 }
