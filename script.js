@@ -1,3 +1,16 @@
+var mouseX, mouseY;
+var wDown = false;
+var aDown = false;
+var sDown = false;
+var dDown = false;
+var coneWidth = Math.PI / 2;
+var world = new World(800, 600);
+
+document.getElementById("canvas").tabIndex = 0;
+document.getElementById("canvas").focus();
+
+setInterval(run, 1000/60);
+
 function World(x, y) {
 	this.x = x;
 	this.y = y;
@@ -14,10 +27,10 @@ function Thing(x, y) {
 	this.x = x;
 	this.y = y;
 	this.points = [];
-	this.points.push([3,3]);
-	this.points.push([3,-3]);
-	this.points.push([-3,-3]);
-	this.points.push([-3,3]);
+	this.points.push([6,6]);
+	this.points.push([6,-6]);
+	this.points.push([-6,-6]);
+	this.points.push([-6,6]);
 }
 
 function run() {
@@ -49,7 +62,7 @@ function draw() {
 	blankCanvas(canvas, ctx);
 
 	//things
-	ctx.fillStyle = "rgb(0,0,200)";
+	ctx.fillStyle = "rgb(0,0,255)";
 	for (var i=0; i<world.things.length; i++) {
 		drawThing(world.things[i], ctx);
 	}
@@ -60,7 +73,7 @@ function draw() {
 		castShadow(world.things[i], ctx);
 	}
 
-	limitVisionCone(ctx);
+	//limitVisionCone(ctx);
 
 	//player
 	ctx.fillStyle = "rgb(200,0,0)";
@@ -69,7 +82,6 @@ function draw() {
 
 function limitVisionCone(ctx) {
 	var player = world.player;
-	var coneWidth = Math.PI / 4;
 	var mouseAngle = Math.atan2(mouseY - player.y,
 							    mouseX - player.x);
 	var theta = mouseAngle + coneWidth / 2;
@@ -179,15 +191,3 @@ function keyUp() {
 		dDown = false;
 	}
 }
-
-var mouseX, mouseY;
-var wDown = false;
-var aDown = false;
-var sDown = false;
-var dDown = false;
-var world = new World(800, 600);
-
-document.getElementById("canvas").tabIndex = 0;
-document.getElementById("canvas").focus();
-
-setInterval(run, 1000/60);
