@@ -4,8 +4,8 @@ var aDown = false;
 var sDown = false;
 var dDown = false;
 var coneWidth = Math.PI / 2;
-var world = new World(800, 600);
 var canvas = document.getElementById("canvas");
+var world = new World(canvas.width, canvas.height);
 
 canvas.tabIndex = 0;
 canvas.focus();
@@ -16,7 +16,7 @@ function World(x, y) {
 	this.x = x;
 	this.y = y;
 
-	this.player = new Thing(canvas.width/2, canvas.height/2);
+	this.player = new Thing(x / 2, y / 2);
 	this.things = [];
 
 	for (var i=0; i<5; i++)
