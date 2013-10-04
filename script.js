@@ -28,21 +28,17 @@ function run() {
 function update() {
 	var player = world.player;
 
-	if(wDown) {
+	if(wDown)
 		player.y -= 1;
-	}
 	
-	if(aDown) {
+	if(aDown)
 		player.x -= 1;
-	}
 	
-	if(sDown) {
+	if(sDown)
 		player.y += 1;
-	}
 
-	if(dDown) {
+	if(dDown)
 		player.x += 1;
-	}
 }
 
 function draw() {
