@@ -20,9 +20,9 @@ function World(x, y) {
 	this.player.speed = 3;
 	this.things = [];
 
-	for (var i=0; i<800; i++)
-		this.things.push(new Thing(Math.random()*2*x,
-								   Math.random()*2*y));
+	for (var i=0; i<1000; i++)
+		this.things.push(new Thing(Math.random()*2.5*x,
+								   Math.random()*2.5*y));
 }
 
 function Thing(x, y) {
@@ -125,10 +125,16 @@ function castShadow(thing, ctx) {
 	var minAngle = Math.PI*2;
 	var maxAngle = -Math.PI*2;
 	var minPoint, maxPoint;
+	var thingAngle = angleToPoint([0,0], thing);
 
 	for (var i=0; i<thing.points.length; i++) {
 		var p = thing.points[i];
 		var theta = angleToPoint(p, thing);
+
+		if (thingAngle > Math.PI / 2 && theta < 0)
+			theta += Math.PI * 2;
+		if (thingAngle < -Math.PI / 2 && theta > 0)
+			theta -= Math.PI * 2;
 
 		if (theta < minAngle) {
 			minAngle = theta;
@@ -141,6 +147,8 @@ function castShadow(thing, ctx) {
 		}
 	}
 
+
+	//shadowify
 	var player = world.player;
 	var x = canvas.width/2 + thing.x - player.x;
 	var y = canvas.height/2 + thing.y - player.y;
@@ -183,6 +191,7 @@ function angleToPoint(point, thing) {
 	var player = world.player;
 	var theta = Math.atan2((thing.y + point[1]) - player.y,
 						   (thing.x + point[0]) - player.x);
+
 	return theta;
 }
 
